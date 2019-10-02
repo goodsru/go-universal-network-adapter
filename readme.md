@@ -36,8 +36,8 @@ import (
 )
 
 func main() {
-	adapter := services.NewUniversalNetworkAdapter()
-	remoteFile, err := models.NewRemoteFile(models.NewDestination("http://lorempixel.com/400/200/", nil, nil))
+    adapter := services.NewUniversalNetworkAdapter()
+    remoteFile, err := models.NewRemoteFile(models.NewDestination("http://lorempixel.com/400/200/", nil, nil))
     if err != nil {
         panic(err)
     }
@@ -45,7 +45,7 @@ func main() {
     if err != nil {
         panic(err)
     }
-
+    
     fmt.Println(content.Name)
     fmt.Println(content.Path)
     buf, err := ioutil.ReadAll(content.Blob)

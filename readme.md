@@ -37,20 +37,19 @@ import (
 
 func main() {
 	adapter := services.NewUniversalNetworkAdapter()
-	remoteFile, err := models.NewRemoteFile(models.NewDestination("https://golangcode.com/images/avatar.jpg", nil, (*time.Duration)(int64(time.Minute))))
+	remoteFile, err := models.NewRemoteFile(models.NewDestination("http://lorempixel.com/400/200/", nil, nil))
+    if err != nil {
+        panic(err)
+    }
+    content, err := adapter.Download(remoteFile)
+    if err != nil {
+        panic(err)
+    }
 
-	if err != nil {
-		panic(err)
-	}
-	content, err := adapter.Download(remoteFile)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(content.Name)
-	fmt.Println(content.Path)
-	buf, err := ioutil.ReadAll(content.Blob)
-	fmt.Println(string(buf))
+    fmt.Println(content.Name)
+    fmt.Println(content.Path)
+    buf, err := ioutil.ReadAll(content.Blob)
+    fmt.Println(len(buf))
 }
 
 ```

@@ -8,8 +8,10 @@ import (
 	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
+	"net"
 	"os"
 	"path"
+	"time"
 )
 
 // sftp file downloader implementation
@@ -124,7 +126,7 @@ func (sftpDownloader *SftpDownloader) getClient(destination *models.ParsedDestin
 	}
 
 	url := destination.GetHost()
-	client, err := ssh.Dial("tcp", url, sshConfig)
+	client, err := sftpDownloader.sshDialWithTimeout("tcp", url, sshConfig, sshConfig.Timeout)
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +137,30 @@ func (sftpDownloader *SftpDownloader) getClient(destination *models.ParsedDestin
 	}
 
 	return &sftpClientWrapper{sftpClient}, nil
+}
+
+// ssh.Dial can hang during authentication, the 'timeout' being set in the config only applying to establishment of the initial connection.
+// This function is effectively ssh.Dial with the ability to set a deadline on the underlying connection.
+// https://github.com/Yeba/fuchsia-tool/commit/652b0acfd634aea432eb2432dcc8ea5a37dccc3b?diff=split
+func (sftpDownloader *SftpDownloader) sshDialWithTimeout(network, addr string, config *ssh.ClientConfig, hardTimeout time.Duration) (*ssh.Client, error) {
+	conn, err := net.DialTimeout(network, addr, config.Timeout)
+	if err != nil {
+		return nil, err
+	}
+	if err := conn.SetDeadline(time.Now().Add(hardTimeout)); err != nil {
+		conn.Close()
+		return nil, err
+	}
+	c, chans, reqs, err := ssh.NewClientConn(conn, addr, config)
+	if err != nil {
+		conn.Close()
+		return nil, err
+	}
+	if err := conn.SetDeadline(time.Time{}); err != nil {
+		c.Close()
+		return nil, err
+	}
+	return ssh.NewClient(c, chans, reqs), nil
 }
 
 type iSftpClient interface {

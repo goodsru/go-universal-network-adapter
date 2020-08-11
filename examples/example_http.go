@@ -10,9 +10,12 @@ import (
 	"time"
 )
 
+var defaultHttpTimeout = time.Duration(int64(time.Minute))
+
 func downloadHttp() {
 	adapter := services.NewUniversalNetworkAdapter()
-	remoteFile, err := models.NewRemoteFile(models.NewDestination("https://golangcode.com/images/avatar.jpg", nil, (*time.Duration)(int64(time.Minute))))
+
+	remoteFile, err := models.NewRemoteFile(models.NewDestination("https://golangcode.com/images/avatar.jpg", nil, &defaultHttpTimeout))
 
 	if err != nil {
 		panic(err)
@@ -32,7 +35,7 @@ func downloadHttpBasicAuth() {
 	remoteFile, err := models.NewRemoteFile(models.NewDestination("http://localhost:443/avatar.jpg", &models.Credentials{
 		User:     `admin`,
 		Password: `$CrazyUnforgettablePassword?`,
-	}, (*time.Duration)(int64(time.Minute))))
+	}, &defaultHttpTimeout))
 
 	if err != nil {
 		panic(err)
@@ -70,15 +73,11 @@ func downloadHttpCertificateAuth() {
 		Certificates: []tls.Certificate{cert},
 		RootCAs:      caCertPool,
 	}
-	tlsConfig.BuildNameToCertificate()
 
 	remoteFile, err := models.NewRemoteFile(models.NewDestination("http://localhost:443/avatar.jpg", &models.Credentials{
-		User: "user",
-		TLSConfig: &tls.Config{
-			Certificates: []tls.Certificate{cert},
-			RootCAs:      caCertPool,
-		},
-	}, (*time.Duration)(int64(time.Minute))))
+		User:      "user",
+		TLSConfig: tlsConfig,
+	}, &defaultHttpTimeout))
 
 	if err != nil {
 		panic(err)

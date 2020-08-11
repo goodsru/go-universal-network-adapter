@@ -61,7 +61,6 @@ type ClientDriver struct {
 
 // NewClientDriver creates a client driver
 func NewClientDriver() *ClientDriver {
-	os.MkdirAll(TempDir, 0777)
 	return &ClientDriver{baseDir: TempDir}
 }
 
@@ -75,11 +74,14 @@ func (driver *ServerDriver) WelcomeUser(cc server.ClientContext) (string, error)
 // AuthUser with authenticate users
 func (driver *ServerDriver) AuthUser(cc server.ClientContext, user, pass string) (server.ClientHandlingDriver, error) {
 	if user == "test" && pass == "test" {
-		clientdriver := NewClientDriver()
-		if driver.FileStream != nil {
-			clientdriver.FileStream = driver.FileStream
+		if err := os.MkdirAll(TempDir, 0777); err != nil {
+			return nil, err
 		}
-		return clientdriver, nil
+		clientDriver := NewClientDriver()
+		if driver.FileStream != nil {
+			clientDriver.FileStream = driver.FileStream
+		}
+		return clientDriver, nil
 	}
 	return nil, errors.New("bad username or password")
 }
@@ -132,7 +134,10 @@ func (driver *ClientDriver) OpenFile(cc server.ClientContext, path string, flag 
 	if (flag & os.O_WRONLY) != 0 {
 		flag |= os.O_CREATE
 		if (flag & os.O_APPEND) == 0 {
-			os.Remove(path)
+			if err := os.Remove(path); err != nil {
+				return nil, err
+			}
+
 		}
 	}
 

@@ -74,21 +74,21 @@ func TestUniversalNetworkAdapter_TestDownloader(t *testing.T) {
 //	})
 //}
 
-type Mock_FtpDownloader struct {
+type MockFtpDownloader struct {
 	mock.Mock
 }
 
-func (m *Mock_FtpDownloader) Browse(destination *models.ParsedDestination) ([]*models.RemoteFile, error) {
+func (m *MockFtpDownloader) Browse(destination *models.ParsedDestination) ([]*models.RemoteFile, error) {
 	args := m.Called(destination)
 	return args.Get(0).([]*models.RemoteFile), args.Error(1)
 }
 
-func (m *Mock_FtpDownloader) Stat(destination *models.ParsedDestination) (*models.RemoteFile, error) {
+func (m *MockFtpDownloader) Stat(destination *models.ParsedDestination) (*models.RemoteFile, error) {
 	args := m.Called(destination)
 	return args.Get(0).(*models.RemoteFile), args.Error(1)
 }
 
-func (m *Mock_FtpDownloader) Download(remoteFile *models.RemoteFile) (*models.RemoteFileContent, error) {
+func (m *MockFtpDownloader) Download(remoteFile *models.RemoteFile) (*models.RemoteFileContent, error) {
 	args := m.Called(remoteFile)
 	return args.Get(0).(*models.RemoteFileContent), args.Error(1)
 }
@@ -122,10 +122,10 @@ func TestUniversalNetworkAdapter_FtpDownloader(t *testing.T) {
 
 	t.Run("BrowseFtp_ReturnsList", func(t *testing.T) {
 		adapter := services.NewUniversalNetworkAdapter()
-		mock_FtpDownloader := &Mock_FtpDownloader{}
-		mock_FtpDownloader.On("Browse", parsedDestination).Return(browsResponse, nil)
+		mockFtpDownloader := &MockFtpDownloader{}
+		mockFtpDownloader.On("Browse", parsedDestination).Return(browsResponse, nil)
 
-		adapter.RegisterDownloader(mock_FtpDownloader, "ftp")
+		adapter.RegisterDownloader(mockFtpDownloader, "ftp")
 
 		list, err := adapter.Browse(destinationList)
 
@@ -141,10 +141,10 @@ func TestUniversalNetworkAdapter_FtpDownloader(t *testing.T) {
 
 	t.Run("DownloadFtp_ReturnsCorrectRemoteFile", func(t *testing.T) {
 		adapter := services.NewUniversalNetworkAdapter()
-		mock_FtpDownloader := &Mock_FtpDownloader{}
-		mock_FtpDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
+		mockFtpDownloader := &MockFtpDownloader{}
+		mockFtpDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
 
-		adapter.RegisterDownloader(mock_FtpDownloader, "ftp")
+		adapter.RegisterDownloader(mockFtpDownloader, "ftp")
 
 		remoteFileContent, err := adapter.Download(remoteFile)
 
@@ -173,10 +173,10 @@ func TestUniversalNetworkAdapter_sFtpDownloader(t *testing.T) {
 
 	t.Run("BrowseFtp_ReturnsList", func(t *testing.T) {
 		adapter := services.NewUniversalNetworkAdapter()
-		mock_FtpDownloader := &Mock_FtpDownloader{}
-		mock_FtpDownloader.On("Browse", parsedDestination).Return(browsResponse, nil)
+		mockFtpDownloader := &MockFtpDownloader{}
+		mockFtpDownloader.On("Browse", parsedDestination).Return(browsResponse, nil)
 
-		adapter.RegisterDownloader(mock_FtpDownloader, "sftp")
+		adapter.RegisterDownloader(mockFtpDownloader, "sftp")
 
 		list, err := adapter.Browse(destinationList)
 
@@ -192,10 +192,10 @@ func TestUniversalNetworkAdapter_sFtpDownloader(t *testing.T) {
 
 	t.Run("DownloadFtp_ReturnsCorrectRemoteFile", func(t *testing.T) {
 		adapter := services.NewUniversalNetworkAdapter()
-		mock_FtpDownloader := &Mock_FtpDownloader{}
-		mock_FtpDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
+		mockFtpDownloader := &MockFtpDownloader{}
+		mockFtpDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
 
-		adapter.RegisterDownloader(mock_FtpDownloader, "sftp")
+		adapter.RegisterDownloader(mockFtpDownloader, "sftp")
 
 		remoteFileContent, err := adapter.Download(remoteFile)
 
@@ -213,21 +213,21 @@ func TestUniversalNetworkAdapter_sFtpDownloader(t *testing.T) {
 
 }
 
-type Mock_HTTPDownloader struct {
+type MockHttpDownloader struct {
 	mock.Mock
 }
 
-func (m *Mock_HTTPDownloader) Browse(destination *models.ParsedDestination) ([]*models.RemoteFile, error) {
+func (m *MockHttpDownloader) Browse(destination *models.ParsedDestination) ([]*models.RemoteFile, error) {
 	args := m.Called(destination)
 	return args.Get(0).([]*models.RemoteFile), args.Error(1)
 }
 
-func (m *Mock_HTTPDownloader) Stat(destination *models.ParsedDestination) (*models.RemoteFile, error) {
+func (m *MockHttpDownloader) Stat(destination *models.ParsedDestination) (*models.RemoteFile, error) {
 	args := m.Called(destination)
 	return args.Get(0).(*models.RemoteFile), args.Error(1)
 }
 
-func (m *Mock_HTTPDownloader) Download(remoteFile *models.RemoteFile) (*models.RemoteFileContent, error) {
+func (m *MockHttpDownloader) Download(remoteFile *models.RemoteFile) (*models.RemoteFileContent, error) {
 	args := m.Called(remoteFile)
 	return args.Get(0).(*models.RemoteFileContent), args.Error(1)
 }
@@ -242,10 +242,10 @@ func TestUniversalNetworkAdapter_HTTPDownloader(t *testing.T) {
 
 	t.Run("DownloadHTTP_ReturnsCorrectRemoteFile", func(t *testing.T) {
 		adapter := services.NewUniversalNetworkAdapter()
-		mock_HTTPDownloader := &Mock_HTTPDownloader{}
-		mock_HTTPDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
+		mockHttpDownloader := &MockHttpDownloader{}
+		mockHttpDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
 
-		adapter.RegisterDownloader(mock_HTTPDownloader, "http")
+		adapter.RegisterDownloader(mockHttpDownloader, "http")
 
 		remoteFileContent, err := adapter.Download(remoteFile)
 
@@ -272,10 +272,10 @@ func TestUniversalNetworkAdapter_HTTPSDownloader(t *testing.T) {
 
 	t.Run("DownloadHTTP_ReturnsCorrectRemoteFile", func(t *testing.T) {
 		adapter := services.NewUniversalNetworkAdapter()
-		mock_HTTPDownloader := &Mock_HTTPDownloader{}
-		mock_HTTPDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
+		mockHttpDownloader := &MockHttpDownloader{}
+		mockHttpDownloader.On("Download", remoteFile).Return(downloadResponse, nil)
 
-		adapter.RegisterDownloader(mock_HTTPDownloader, "https")
+		adapter.RegisterDownloader(mockHttpDownloader, "https")
 
 		remoteFileContent, err := adapter.Download(remoteFile)
 

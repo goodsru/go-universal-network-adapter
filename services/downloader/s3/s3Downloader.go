@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/konart/go-universal-network-adapter/models"
 	// "goods.ru/go-universal-network-adapter/models"
 )
 

@@ -4,7 +4,7 @@ package http
 import (
 	"errors"
 	"fmt"
-	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/konart/go-universal-network-adapter/models"
 	"io"
 	"io/ioutil"
 	"net/http"

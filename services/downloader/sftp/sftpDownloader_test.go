@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/konart/go-universal-network-adapter/models"
 	assertLib "github.com/stretchr/testify/require"
 )
 

@@ -1,7 +1,7 @@
 // universal-network-adapter interfaces
 package contracts
 
-import "github.com/goodsru/go-universal-network-adapter/models"
+import "github.com/konart/go-universal-network-adapter/models"
 
 type Downloader interface {
 	// Get remote file info

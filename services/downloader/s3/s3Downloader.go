@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/konart/go-universal-network-adapter/models"
 	// "goods.ru/go-universal-network-adapter/models"
 )
@@ -84,22 +85,12 @@ func (s *S3Downloader) download(client *s3.S3, remoteFile *models.RemoteFile) (*
 	defer localFile.Close()
 
 	in := s3.GetObjectInput{
-		Bucket: aws.String(remoteFile.ParsedDestination.GetPath()),
-		Key:    aws.String(remoteFile.Path),
+		Bucket: aws.String(strings.TrimPrefix(remoteFile.ParsedDestination.GetPath(), "/")),
+		Key:    aws.String(remoteFile.Name),
 	}
 
-	obj, err := client.GetObject(&in)
-	if err != nil {
-		return nil, err
-	}
-	defer obj.Body.Close()
-
-	body, err := ioutil.ReadAll(obj.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = localFile.Write(body)
+	dm := s3manager.NewDownloaderWithClient(client)
+	_, err = dm.Download(localFile, &in)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +106,7 @@ func (s *S3Downloader) download(client *s3.S3, remoteFile *models.RemoteFile) (*
 
 func (s *S3Downloader) browse(client *s3.S3, destination *models.ParsedDestination) ([]*models.RemoteFile, error) {
 	in := s3.ListObjectsInput{
-		Bucket: aws.String(destination.GetPath()),
+		Bucket: aws.String(strings.TrimPrefix(destination.GetPath(), "/")),
 	}
 
 	out, err := client.ListObjects(&in)
@@ -137,36 +128,3 @@ func (s *S3Downloader) browse(client *s3.S3, destination *models.ParsedDestinati
 
 	return files, nil
 }
-
-// func main() {
-// 	d := S3Downloader{}
-
-// 	dest := models.Destination{
-// 		Url: "htts://storage.yandexcloud.net/sbermarket-retailers-goods",
-// 		Protocol: "s3",
-// 		Credentials: &models.Credentials{
-// 			User:     "DTncLnVxNfYSGjPy43e7",
-// 			Password: "d-7e1bJlMGSSlpptH79HNwMnOWmYHUvWoPffGOOe",
-// 		},
-// 	}
-
-// 	parsed, err := models.ParseDestination(&dest)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-
-// 	files, err := d.Browse(parsed)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	fmt.Printf("%+v\n", files[0])
-
-// 	cont, err := d.Download(files[0])
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	fmt.Printf("%+v\n", cont.Path)
-// }

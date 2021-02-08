@@ -10,6 +10,10 @@ import (
 type Destination struct {
 	// remote file/dir url. Should start with protocol
 	Url string
+	// remote protocol. May be used to explicitly tell what protocol to use (i.e. "http", "ftp",
+	// "etc").
+	// Takes priority over protocol defined in Destination.Url
+	Protocol string
 	// credentials to access the remote file/dir
 	Credentials *Credentials
 	// connection timeout
@@ -30,6 +34,10 @@ func NewDestination(url string, credentials *Credentials, timeout *time.Duration
 type ParsedDestination struct {
 	// remote file/dir url
 	Url string
+	// remote protocol. May be used to explicitly tell what protocol to use (i.e. "http", "ftp",
+	// "etc").
+	// Takes priority over protocol defined in Destination.Url
+	Protocol string
 	// credentials to access the remote file/dir
 	Credentials Credentials
 	// Url parsed by using net/url parser
@@ -89,5 +97,5 @@ func ParseDestination(destination *Destination) (*ParsedDestination, error) {
 
 	parsedUrl.User = nil
 
-	return &ParsedDestination{Url: parsedUrl.String(), Credentials: *credentials, ParsedUrl: parsedUrl, Timeout: destination.Timeout}, nil
+	return &ParsedDestination{Url: parsedUrl.String(), Protocol: destination.Protocol, Credentials: *credentials, ParsedUrl: parsedUrl, Timeout: destination.Timeout}, nil
 }

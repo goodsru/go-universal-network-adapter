@@ -2,11 +2,22 @@ package services
 
 import (
 	"fmt"
+
 	"github.com/goodsru/go-universal-network-adapter/contracts"
 	"github.com/goodsru/go-universal-network-adapter/models"
 	"github.com/goodsru/go-universal-network-adapter/services/downloader/ftp"
 	"github.com/goodsru/go-universal-network-adapter/services/downloader/http"
 	"github.com/goodsru/go-universal-network-adapter/services/downloader/sftp"
+	"github.com/goodsru/go-universal-network-adapter/services/downloader/s3"
+)
+
+const (
+	HTTP  = "http"
+	HTTPS = "https"
+	FTP   = "ftp"
+	FTPS  = "ftps"
+	SFTP  = "sftp"
+	S3    = "s3"
 )
 
 type UniversalNetworkAdapter struct {
@@ -17,12 +28,14 @@ func NewUniversalNetworkAdapter() *UniversalNetworkAdapter {
 	adapter := &UniversalNetworkAdapter{downloaderMap: make(map[string]contracts.Downloader)}
 
 	httpDownloader := &http.HttpDownloader{}
-	adapter.RegisterDownloader(httpDownloader, "http")
-	adapter.RegisterDownloader(httpDownloader, "https")
+	adapter.RegisterDownloader(httpDownloader, HTTP)
+	adapter.RegisterDownloader(httpDownloader, HTTPS)
 
-	adapter.RegisterDownloader(&ftp.FtpDownloader{}, "ftp")
-	adapter.RegisterDownloader(&ftp.FtpDownloader{}, "ftps")
-	adapter.RegisterDownloader(&sftp.SftpDownloader{}, "sftp")
+	adapter.RegisterDownloader(&ftp.FtpDownloader{}, FTP)
+	adapter.RegisterDownloader(&ftp.FtpDownloader{}, FTPS)
+	adapter.RegisterDownloader(&sftp.SftpDownloader{}, SFTP)
+
+	adapter.RegisterDownloader(&s3.S3Downloader{}, S3)
 
 	return adapter
 }
@@ -60,9 +73,18 @@ func (adapter *UniversalNetworkAdapter) Download(remoteFile *models.RemoteFile) 
 }
 
 func (adapter *UniversalNetworkAdapter) getDownloader(parsedDestination *models.ParsedDestination) (contracts.Downloader, error) {
-	downloader, ok := adapter.downloaderMap[parsedDestination.GetScheme()]
+	var scheme string
+
+	if parsedDestination.Protocol != "" {
+		scheme = parsedDestination.Protocol
+	} else {
+		scheme = parsedDestination.GetScheme()
+	}
+
+
+	downloader, ok := adapter.downloaderMap[scheme]
 	if !ok {
-		return nil, fmt.Errorf("не найден загрузчик для %v", parsedDestination.Url)
+		return nil, fmt.Errorf("не найден загрузчик для URL: %v, Scheme: %s", parsedDestination.Url, scheme)
 	}
 	return downloader, nil
 }

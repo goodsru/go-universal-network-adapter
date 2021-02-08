@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"github.com/konart/go-universal-network-adapter/models"
-	"github.com/konart/go-universal-network-adapter/services"
-	"github.com/konart/go-universal-network-adapter/services/downloader"
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/services"
+	"github.com/goodsru/go-universal-network-adapter/services/downloader"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"io"

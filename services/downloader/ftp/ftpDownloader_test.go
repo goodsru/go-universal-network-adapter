@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/bouk/monkey"
-	"github.com/konart/go-universal-network-adapter/models"
-	"github.com/konart/go-universal-network-adapter/tests/ftpServerDriver"
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/tests/ftpServerDriver"
 	assertLib "github.com/stretchr/testify/assert"
 )
 

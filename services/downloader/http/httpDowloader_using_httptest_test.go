@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
-	"github.com/konart/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/models"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"net/http"

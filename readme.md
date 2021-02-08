@@ -8,7 +8,7 @@ Universal Network Adapter offers an elegant abstraction over major network proto
 
 ## Install
 
-`go get -u github.com/konart/go-universal-network-adapter`
+`go get -u github.com/goodsru/go-universal-network-adapter`
 
 
 ## Features
@@ -19,7 +19,7 @@ Universal Network Adapter offers an elegant abstraction over major network proto
 
 ## Examples
 
-See [examples](https://github.com/konart/go-universal-network-adapter/tree/master/examples) for a variety of examples.
+See [examples](https://github.com/goodsru/go-universal-network-adapter/tree/master/examples) for a variety of examples.
 
 
 **Http:**
@@ -29,8 +29,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/konart/go-universal-network-adapter/models"
-	"github.com/konart/go-universal-network-adapter/services"
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/services"
 	"io/ioutil"
 	"time"
 )
@@ -57,14 +57,14 @@ func main() {
 **Ftp:**
 
 In case you don't have production ftp server, then for testing ftp downloading first you need to up ftp server on localhost, as it's implemented in this
-[example](https://github.com/konart/go-universal-network-adapter/tree/master/examples/example_ftp.go).
+[example](https://github.com/goodsru/go-universal-network-adapter/tree/master/examples/example_ftp.go).
 ```go
 package main
 
 import (
 	"fmt"
-	"github.com/konart/go-universal-network-adapter/models"
-	"github.com/konart/go-universal-network-adapter/services"
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/services"
 	"io/ioutil"
 )
 
@@ -94,7 +94,7 @@ func main() {
 **Sftp:**
 
 In case you don't have some production sftp server, then for testing sftp downloading first you need to up sftp server 
-on localhost, as it's implemented in this [example](https://github.com/konart/go-universal-network-adapter/tree/master/examples/example_sftp.go).
+on localhost, as it's implemented in this [example](https://github.com/goodsru/go-universal-network-adapter/tree/master/examples/example_sftp.go).
 
 ```go
 package main
@@ -102,8 +102,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"github.com/konart/go-universal-network-adapter/models"
-	"github.com/konart/go-universal-network-adapter/services"
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/services"
 )
 
 func main() {

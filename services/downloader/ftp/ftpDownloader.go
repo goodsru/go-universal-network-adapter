@@ -3,7 +3,7 @@
 package ftp
 
 import (
-	"github.com/konart/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/models"
 	"github.com/secsy/goftp"
 	"io"
 	"io/ioutil"

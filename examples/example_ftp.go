@@ -3,8 +3,8 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/konart/go-universal-network-adapter/models"
-	"github.com/konart/go-universal-network-adapter/services"
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/services"
 	"io/ioutil"
 )
 

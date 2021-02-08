@@ -3,12 +3,12 @@ package services
 import (
 	"fmt"
 
-	"github.com/konart/go-universal-network-adapter/contracts"
-	"github.com/konart/go-universal-network-adapter/models"
-	"github.com/konart/go-universal-network-adapter/services/downloader/ftp"
-	"github.com/konart/go-universal-network-adapter/services/downloader/http"
-	"github.com/konart/go-universal-network-adapter/services/downloader/sftp"
-	"github.com/konart/go-universal-network-adapter/services/downloader/s3"
+	"github.com/goodsru/go-universal-network-adapter/contracts"
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/services/downloader/ftp"
+	"github.com/goodsru/go-universal-network-adapter/services/downloader/http"
+	"github.com/goodsru/go-universal-network-adapter/services/downloader/sftp"
+	"github.com/goodsru/go-universal-network-adapter/services/downloader/s3"
 )
 
 const (

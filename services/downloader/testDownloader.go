@@ -1,6 +1,6 @@
 package downloader
 
-import "github.com/konart/go-universal-network-adapter/models"
+import "github.com/goodsru/go-universal-network-adapter/models"
 
 type TestDownloader struct {
 }

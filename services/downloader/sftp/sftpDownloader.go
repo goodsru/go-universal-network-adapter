@@ -3,7 +3,7 @@ package sftp
 
 import (
 	"fmt"
-	"github.com/konart/go-universal-network-adapter/models"
+	"github.com/goodsru/go-universal-network-adapter/models"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 	"io"

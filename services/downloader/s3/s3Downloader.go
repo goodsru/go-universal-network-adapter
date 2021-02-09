@@ -61,9 +61,10 @@ func (s *S3Downloader) Download(file *models.RemoteFile) (*models.RemoteFileCont
 
 func (s *S3Downloader) getClient(destination *models.ParsedDestination) (*s3.S3, error) {
 	s3Config := &aws.Config{
-		Credentials: credentials.NewStaticCredentials(destination.GetUser(), destination.GetPassword(), ""),
-		Endpoint:    aws.String(destination.GetHost()),
-		Region:      aws.String("ru-central1"), // временный костыль
+		Credentials:      credentials.NewStaticCredentials(destination.GetUser(), destination.GetPassword(), ""),
+		Endpoint:         aws.String(destination.GetHost()),
+		Region:           aws.String("ru-central1"), // временный костыль
+		S3ForcePathStyle: aws.Bool(true),
 	}
 
 	sess, err := session.NewSession(s3Config)

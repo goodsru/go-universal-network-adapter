@@ -1,10 +1,11 @@
 package sftp
 
 import (
-	"github.com/stretchr/testify/mock"
 	"io"
 	"os"
 	"time"
+
+	"github.com/stretchr/testify/mock"
 )
 
 type fakeSftpClient struct {
@@ -26,6 +27,22 @@ func (ftp *fakeSftpClient) Open(path string) (io.ReadCloser, error) {
 	}
 	return (io.ReadCloser)(nil), args.Error(1)
 
+}
+
+func (ftp *fakeSftpClient) Remove(path string) error {
+	args := ftp.Called(path)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return args.Error(0)
+}
+
+func (ftp *fakeSftpClient) RemoveDirectory(path string) error {
+	args := ftp.Called(path)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return args.Error(0)
 }
 
 func (ftp *fakeSftpClient) Close() error {

@@ -19,6 +19,7 @@ type RemoteFile struct {
 	Size int64
 	// file modification date
 	Lastmod time.Time
+	IsDir   bool
 }
 
 // Constructor for RemoteFile

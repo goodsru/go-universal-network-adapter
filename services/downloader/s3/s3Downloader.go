@@ -59,6 +59,10 @@ func (s *S3Downloader) Download(file *models.RemoteFile) (*models.RemoteFileCont
 	return s.download(client, file)
 }
 
+func (s *S3Downloader) Remove(remoteFile *models.RemoteFile) error {
+	return nil
+}
+
 func (s *S3Downloader) getClient(destination *models.ParsedDestination) (*s3.S3, error) {
 	s3Config := &aws.Config{
 		Credentials:      credentials.NewStaticCredentials(destination.GetUser(), destination.GetPassword(), ""),

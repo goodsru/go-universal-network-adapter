@@ -7,8 +7,8 @@ import (
 	"github.com/goodsru/go-universal-network-adapter/models"
 	"github.com/goodsru/go-universal-network-adapter/services/downloader/ftp"
 	"github.com/goodsru/go-universal-network-adapter/services/downloader/http"
-	"github.com/goodsru/go-universal-network-adapter/services/downloader/sftp"
 	"github.com/goodsru/go-universal-network-adapter/services/downloader/s3"
+	"github.com/goodsru/go-universal-network-adapter/services/downloader/sftp"
 )
 
 const (
@@ -72,6 +72,14 @@ func (adapter *UniversalNetworkAdapter) Download(remoteFile *models.RemoteFile) 
 	return downloader.Download(remoteFile)
 }
 
+func (adapter *UniversalNetworkAdapter) Remove(remoteFile *models.RemoteFile) error {
+	downloader, err := adapter.getDownloader(remoteFile.ParsedDestination)
+	if err != nil {
+		return err
+	}
+	return downloader.Remove(remoteFile)
+}
+
 func (adapter *UniversalNetworkAdapter) getDownloader(parsedDestination *models.ParsedDestination) (contracts.Downloader, error) {
 	var scheme string
 
@@ -80,7 +88,6 @@ func (adapter *UniversalNetworkAdapter) getDownloader(parsedDestination *models.
 	} else {
 		scheme = parsedDestination.GetScheme()
 	}
-
 
 	downloader, ok := adapter.downloaderMap[scheme]
 	if !ok {

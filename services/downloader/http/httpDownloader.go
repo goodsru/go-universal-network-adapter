@@ -4,11 +4,12 @@ package http
 import (
 	"errors"
 	"fmt"
-	"github.com/goodsru/go-universal-network-adapter/models"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"github.com/goodsru/go-universal-network-adapter/models"
 )
 
 type HttpDownloader struct {
@@ -30,6 +31,10 @@ func (httpDownloader *HttpDownloader) Browse(destination *models.ParsedDestinati
 func (httpDownloader *HttpDownloader) Download(remoteFile *models.RemoteFile) (*models.RemoteFileContent, error) {
 	httpClient := httpDownloader.getClient(remoteFile.ParsedDestination)
 	return httpDownloader.download(httpClient, remoteFile)
+}
+
+func (httpDownloader *HttpDownloader) Remove(remoteFile *models.RemoteFile) error {
+	return nil
 }
 
 func (httpDownloader *HttpDownloader) download(client *http.Client, remoteFile *models.RemoteFile) (*models.RemoteFileContent, error) {

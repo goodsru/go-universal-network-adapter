@@ -447,6 +447,48 @@ AGBu2h7VnRlNlUpBP+rMHOTKxeZeKcbx//noY3AV8rA0yBmG75ImxQ==
 		assert.Equal("Privet", string(blobBytes))
 	})
 
+	t.Run("Sftp_RemoveFileWithCredentialsNotInUrl_ReturnsCorrectRemoteFile", func(t *testing.T) {
+		listener, _, _ := startTestSftpServer(port, login, pass, "", isDebug)
+		defer listener.Close()
+
+		fileName := "file_to_delete.txt"
+		_, err := os.Create(path.Join(dir, "test_files", fileName))
+		assert.Nil(err)
+		remoteFileDest := models.NewDestination(
+			"sftp://"+fmt.Sprintf("localhost:%v", port)+path.Join(dir, "test_files", fileName),
+			&models.Credentials{
+				User:     `user`,
+				Password: `pass`,
+			},
+			nil)
+		parsedDest, err := models.NewRemoteFile(remoteFileDest)
+		assert.Nil(err)
+
+		err = sftpDownloader.Remove(parsedDest)
+		assert.Nil(err, fmt.Sprintf("err == %v, expected - nil", err))
+	})
+
+	t.Run("Sftp_RemoveDirWithCredentialsNotInUrl_ReturnsCorrectRemoteFile", func(t *testing.T) {
+		listener, _, _ := startTestSftpServer(port, login, pass, "", isDebug)
+		defer listener.Close()
+
+		dirName := "dir_to_delete"
+		err := os.Mkdir(path.Join(dir, "test_files", dirName), os.ModePerm)
+		assert.Nil(err)
+		remoteFileDest := models.NewDestination(
+			"sftp://"+fmt.Sprintf("localhost:%v", port)+path.Join(dir, "test_files", dirName),
+			&models.Credentials{
+				User:     `user`,
+				Password: `pass`,
+			},
+			nil)
+		parsedDest, err := models.NewRemoteFile(remoteFileDest)
+		assert.Nil(err)
+
+		err = sftpDownloader.Remove(parsedDest)
+		assert.Nil(err, fmt.Sprintf("err == %v, expected - nil", err))
+	})
+
 	t.Run("Sftp_PrefersCredentialsToCredentialsFromUrl", func(t *testing.T) {
 		listener, _, _ := startTestSftpServer(port, login, pass, "", isDebug)
 		defer listener.Close()

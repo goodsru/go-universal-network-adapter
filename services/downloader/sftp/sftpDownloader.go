@@ -3,15 +3,16 @@ package sftp
 
 import (
 	"fmt"
-	"github.com/goodsru/go-universal-network-adapter/models"
-	"github.com/pkg/sftp"
-	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
 	"net"
 	"os"
 	"path"
 	"time"
+
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/pkg/sftp"
+	"golang.org/x/crypto/ssh"
 )
 
 // sftp file downloader implementation
@@ -45,6 +46,15 @@ func (sftpDownloader *SftpDownloader) Download(remoteFile *models.RemoteFile) (*
 	return sftpDownloader.download(sftpClient, remoteFile)
 }
 
+func (sftpDownloader *SftpDownloader) Remove(remoteFile *models.RemoteFile) error {
+	sftpClient, err := sftpDownloader.getClient(remoteFile.ParsedDestination)
+	if err != nil {
+		return err
+	}
+	defer sftpClient.Close()
+	return sftpDownloader.remove(sftpClient, remoteFile)
+}
+
 func (sftpDownloader *SftpDownloader) stat(client iSftpClient, destination *models.ParsedDestination) (*models.RemoteFile, error) {
 	filePath := destination.GetPath()
 	stat, err := client.Stat(filePath)
@@ -55,7 +65,7 @@ func (sftpDownloader *SftpDownloader) stat(client iSftpClient, destination *mode
 		return nil, fmt.Errorf("destination is a directory")
 	}
 
-	return &models.RemoteFile{Name: stat.Name(), Path: filePath, Size: stat.Size(), Lastmod: stat.ModTime(), ParsedDestination: destination}, nil
+	return &models.RemoteFile{Name: stat.Name(), Path: filePath, Size: stat.Size(), Lastmod: stat.ModTime(), IsDir: stat.IsDir(), ParsedDestination: destination}, nil
 }
 
 func (sftpDownloader *SftpDownloader) browse(client iSftpClient, destination *models.ParsedDestination) ([]*models.RemoteFile, error) {
@@ -70,7 +80,7 @@ func (sftpDownloader *SftpDownloader) browse(client iSftpClient, destination *mo
 		if item.IsDir() {
 			continue
 		}
-		result = append(result, &models.RemoteFile{Name: item.Name(), Path: folderPath, Size: item.Size(), Lastmod: item.ModTime(), ParsedDestination: destination})
+		result = append(result, &models.RemoteFile{Name: item.Name(), Path: folderPath, Size: item.Size(), Lastmod: item.ModTime(), IsDir: item.IsDir(), ParsedDestination: destination})
 	}
 
 	return result, nil
@@ -163,10 +173,24 @@ func (sftpDownloader *SftpDownloader) sshDialWithTimeout(network, addr string, c
 	return ssh.NewClient(c, chans, reqs), nil
 }
 
+func (sftpDownloader *SftpDownloader) remove(client iSftpClient, remoteFile *models.RemoteFile) error {
+	filePath := path.Join(remoteFile.Path, remoteFile.Name)
+	stat, err := client.Stat(filePath)
+	if err != nil {
+		return err
+	}
+	if stat.IsDir() {
+		return client.RemoveDirectory(filePath)
+	}
+	return client.Remove(filePath)
+}
+
 type iSftpClient interface {
 	ReadDir(root string) ([]os.FileInfo, error)
 	Open(path string) (io.ReadCloser, error)
 	Stat(p string) (os.FileInfo, error)
+	Remove(path string) error
+	RemoveDirectory(path string) error
 	Close() error
 }
 

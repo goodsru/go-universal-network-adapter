@@ -3,12 +3,13 @@
 package ftp
 
 import (
-	"github.com/goodsru/go-universal-network-adapter/models"
-	"github.com/secsy/goftp"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
+
+	"github.com/goodsru/go-universal-network-adapter/models"
+	"github.com/secsy/goftp"
 )
 
 type FtpDownloader struct {
@@ -17,6 +18,9 @@ type FtpDownloader struct {
 type IFtpClient interface {
 	ReadDir(destination string) ([]os.FileInfo, error)
 	Retrieve(filePath string, dest io.Writer) error
+	Delete(path string) error
+	Rmdir(path string) error
+	Stat(path string) (os.FileInfo, error)
 }
 
 func (ftpDownloader *FtpDownloader) Stat(destination *models.ParsedDestination) (*models.RemoteFile, error) {
@@ -61,6 +65,17 @@ func (ftpDownloader *FtpDownloader) Download(remoteFile *models.RemoteFile) (*mo
 	defer ftpClient.Close()
 
 	return ftpDownloader.download(ftpClient, remoteFile)
+}
+
+func (ftpDownloader *FtpDownloader) Remove(remoteFile *models.RemoteFile) error {
+	ftpClient, err := ftpDownloader.getClient(remoteFile.ParsedDestination)
+	if err != nil {
+		return err
+	}
+
+	defer ftpClient.Close()
+
+	return ftpDownloader.remove(ftpClient, remoteFile)
 }
 
 func (ftpDownloader *FtpDownloader) download(ftpClient IFtpClient, remoteFile *models.RemoteFile) (*models.RemoteFileContent, error) {
@@ -114,9 +129,21 @@ func (ftpDownloader *FtpDownloader) browse(client IFtpClient, destination *model
 	}
 	for _, entry := range entryList {
 		result = append(result, &models.RemoteFile{Name: entry.Name(), Path: destination.GetPath(), Size: entry.Size(),
-			ParsedDestination: destination, Lastmod: entry.ModTime()})
+			ParsedDestination: destination, Lastmod: entry.ModTime(), IsDir: entry.IsDir()})
 	}
 	return result, nil
+}
+
+func (ftpDownloader *FtpDownloader) remove(client IFtpClient, remoteFile *models.RemoteFile) error {
+	filePath := path.Join(remoteFile.Path, remoteFile.Name)
+	stat, err := client.Stat(filePath)
+	if err != nil {
+		return err
+	}
+	if stat.IsDir() {
+		return client.Rmdir(filePath)
+	}
+	return client.Delete(filePath)
 }
 
 //type FtpResponse interface {

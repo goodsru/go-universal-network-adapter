@@ -5,6 +5,10 @@ import "github.com/goodsru/go-universal-network-adapter/models"
 type TestDownloader struct {
 }
 
+func (testDownloader *TestDownloader) Remove(remoteFile *models.RemoteFile) error {
+	return nil
+}
+
 func (testDownloader *TestDownloader) Browse(destination *models.ParsedDestination) ([]*models.RemoteFile, error) {
 	return []*models.RemoteFile{{
 		Name: "test1.exe",

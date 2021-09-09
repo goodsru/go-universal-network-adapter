@@ -3,10 +3,11 @@ package ftpServerDriver
 import (
 	"crypto/tls"
 	"errors"
-	"github.com/fclairamb/ftpserver/server"
-	"github.com/go-kit/kit/log"
 	"io/ioutil"
 	"os"
+
+	"github.com/fclairamb/ftpserver/server"
+	"github.com/go-kit/kit/log"
 )
 
 var TempDir = os.TempDir() + "\\ftpServerTest"

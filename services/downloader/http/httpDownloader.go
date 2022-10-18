@@ -43,7 +43,7 @@ func (httpDownloader *HttpDownloader) download(client *http.Client, remoteFile *
 	if err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequest("Get", remoteFile.ParsedDestination.Url, nil)
+	req, err := http.NewRequest("GET", remoteFile.ParsedDestination.Url, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -15,5 +15,5 @@ require (
 	github.com/secsy/goftp v0.0.0-20180816013212-012609e90524
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.3.0
-	golang.org/x/crypto v0.1.0
+	golang.org/x/crypto v0.17.0
 )
